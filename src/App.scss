@@ -1,0 +1,9 @@
+@import url('https://fonts.googleapis.com/css?family=Lemonada:400,600&display=swap');
+
+$font: 'Lemonada', cursive;
+
+* {
+  font-family: $font;
+  background-color: #ff3f34;
+  color: ghostwhite;
+}
