@@ -12,6 +12,9 @@ function App() {
     questions: '',
     answerOptions: [],
     answer: '',
+  })
+
+  const [currentAnswer, setCurrentAnswer] = useState({
     answersCount: {},
   })
 
@@ -48,16 +51,14 @@ function App() {
     })
   }, [])
 
-  const setUserAnswer = (answer) => {
-    setState((prevState) => ({
-      ...state,
-      answersCount: {
-        ...prevState.answersCount,
-        [answer]: state.answersCount[answer] + 1,
-      },
-      answer: answer,
-    }))
-    console.log(state.answer)
+  const handleAnswerSelected = (e) => {
+    setUserAnswer(e.currentTarget.value)
+
+    if (state.questionId < quizQuestions.length) {
+      setTimeout(() => setNextQuestion(), 300)
+    } else {
+      setTimeout(() => setResults(getResults()), 300)
+    }
   }
 
   const setNextQuestion = () => {
@@ -69,23 +70,28 @@ function App() {
       questionId: state.questionId + 1,
       question: quizQuestions[counter].question,
       answerOptions: quizQuestions[counter].answers,
-      answers: '',
+      answer: '',
     })
   }
 
-  const handleAnswerSelected = (e) => {
-    setUserAnswer(e.target.value)
-    if (state.questionId < quizQuestions.length) {
-      setTimeout(() => setNextQuestion(), 300)
-      console.log(stateResult)
-    } else {
-      setTimeout(() => setResults(() => getResults()), 300)
-      console.log(stateResult)
-    }
+  const setUserAnswer = (answer) => {
+    setCurrentAnswer((prevState) => ({
+      answersCount: {
+        ...prevState.answersCount,
+        [answer]: (currentAnswer.answersCount[answer] || 0) + 1,
+      },
+    }))
+
+    setState({
+      ...state,
+      answer: [answer],
+    })
+    console.log(currentAnswer)
+    console.log(currentAnswer.answersCount)
   }
 
   const getResults = () => {
-    const answersCount = state.answersCount
+    const answersCount = currentAnswer.answersCount
     const answersCountKeys = Object.keys(answersCount)
     const answersCountValues = answersCountKeys.map((key) => answersCount[key])
     const maxAnswerCount = Math.max.apply(null, answersCountValues)
@@ -98,11 +104,11 @@ function App() {
   const setResults = (result) => {
     if (result.length === 1) {
       setStateResult({ ...stateResult, result: result[0] })
-      console.log('Continue')
     } else {
-      setStateResult({ ...stateResult, result: 'Undetermined' })
-      console.log('Failed')
+      setStateResult({ ...stateResult, result: result[(0, 1)] })
     }
+
+    console.log(result)
   }
 
   return (
@@ -111,8 +117,8 @@ function App() {
         <h2>React Quiz</h2>
       </div>
       <div className='App-container'>
-        {state.result ? (
-          <Result quizResult={state.result} />
+        {stateResult.result ? (
+          <Result quizResult={stateResult.result} />
         ) : (
           <Quiz
             answer={state.answer}
