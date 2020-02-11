@@ -4,6 +4,101 @@ $font: 'Lemonada', cursive;
 
 * {
   font-family: $font;
-  background-color: #ff3f34;
-  color: ghostwhite;
 }
+
+.App {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+  align-items: center;
+  width: 85vw;
+  height: 65vh;
+  margin: 10vh auto;
+
+  .App-header {
+    width: 80%;
+    padding: 20px;
+    align-self: center;
+    text-align: center;
+    border: 2px solid #574b90;
+
+    h2 {
+      text-transform: uppercase;
+      font-size: 26px;
+     
+    }
+  }
+
+  .App-container {
+    width: 80%;
+    height: 52vh;
+    padding: 20px;
+    align-self: center;
+    text-align: center;
+    border: 2px solid #786fa6;
+
+    .question {
+      margin: 25px 10px;
+    }
+    
+    ul {
+      margin-top: 5vh;
+      list-style: none;
+
+      .option {
+        list-style: none;
+        border: 1px solid #303952d7;
+        width: 80%;
+        font-size: 16px;
+        line-height: 1.5;
+        margin: auto;
+
+        .radioCustomButton, .radioCustomLabel {
+          display: inline-block; 
+          vertical-align: middle;
+
+        }
+
+        input{
+          width: 0%;
+          opacity: 0;
+
+        }
+        
+        label.radioCustomLabel {
+          position: relative;
+          width: 100%;
+          font-size: 16px;
+          line-height: 1.5;
+          padding: 30px 20px;
+          cursor: pointer;
+
+          &:before {
+            position:absolute;
+            width: 28px;
+            height: 28px;
+            left: 40px;
+            content: '';
+            display: inline-flex;
+            vertical-align: middle;
+            background-color: ghostwhite;
+            border: 1px solid#303952;
+            border-radius: 50%;
+          }
+         
+
+          }
+        }
+        
+
+
+      }
+
+    
+  
+
+    }
+
+    
+    
+  }

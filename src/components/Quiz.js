@@ -10,6 +10,20 @@ function Quiz(props) {
     <div className='quiz'>
       <QuestionCount counter={props.questionId} total={props.questionTotal} />
       <Question content={props.question} />
+      <ul className='answerOptions'>
+        {props.answerOptions.map((item) => {
+          return (
+            <AnswerOption
+              key={item.content}
+              answerContent={item.content}
+              answerType={item.type}
+              answer={props.answer}
+              questionId={props.questionId}
+              onAnswerSelected={props.onAnswerSelected}
+            />
+          )
+        })}
+      </ul>
     </div>
   )
 }
