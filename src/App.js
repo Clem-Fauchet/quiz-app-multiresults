@@ -2,7 +2,8 @@ import React, { useState, useEffect } from 'react'
 import './App.scss'
 
 import Quiz from './components/Quiz'
-import quizQuestions from './api/quizQuestions'
+// import quizQuestions from './api/quizQuestions'
+
 // import Question from './components/Question'
 // import QuestionCount from './components/QuestionCount'
 // import AnswerOption from './components/AnswerOption'
@@ -108,8 +109,25 @@ function App() {
   })
 
   useEffect(() => {
-    const shuffledAnswerOptions = quizQuestions.map(
-      (question) => question.answers
+    const shuffledArray = (array) => {
+      let currentIndex = array.length,
+        temporaryValue,
+        randomIndex
+
+      while (0 !== currentIndex) {
+        randomIndex = Math.floor(Math.random() * currentIndex)
+        currentIndex -= 1
+
+        temporaryValue = array[currentIndex]
+        array[currentIndex] = array[randomIndex]
+        array[randomIndex] = temporaryValue
+      }
+
+      return array
+    }
+
+    const shuffledAnswerOptions = quizQuestions.map((question) =>
+      shuffledArray(question.answers)
     )
 
     setState({
@@ -117,7 +135,38 @@ function App() {
       question: quizQuestions[0].question,
       answerOptions: shuffledAnswerOptions[0],
     })
-  })
+  }, [])
+
+  const setUserAnswer = (answer) => {
+    setState({
+      ...state,
+      answersCount: {
+        ...state.answersCount,
+        [answer]: (state.answersCount[answer] || 0) + 1,
+      },
+      answer: answer,
+    })
+  }
+
+  const setNextQuestion = () => {
+    const counter = state.counter + 1
+
+    setState({
+      ...state,
+      counter: counter,
+      questionId: state.questionId + 1,
+      question: quizQuestions[counter].question,
+      answerOptions: quizQuestions[counter].answers,
+      answers: '',
+    })
+  }
+
+  const handleAnswerSelected = (e) => {
+    setUserAnswer(e.currentTarget.value)
+    if (state.questionId < quizQuestions.length) {
+      setTimeout(() => setNextQuestion(), 300)
+    }
+  }
 
   return (
     <div className='App'>
@@ -131,6 +180,7 @@ function App() {
           questionId={state.questionId}
           question={state.question}
           questionTotal={quizQuestions.length}
+          onAnswerSelected={handleAnswerSelected}
         />
       </div>
     </div>
