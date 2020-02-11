@@ -105,7 +105,7 @@ function App() {
     if (result.length === 1) {
       setStateResult({ ...stateResult, result: result[0] })
     } else {
-      setStateResult({ ...stateResult, result: result[(0, 1)] })
+      setStateResult({ ...stateResult, result: result[0 & 1] })
     }
 
     console.log(result)
