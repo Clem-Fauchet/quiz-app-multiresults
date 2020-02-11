@@ -1,5 +1,4 @@
 import React from 'react'
-import PropTypes from 'prop-types'
 
 function Question(props) {
   return (
@@ -7,10 +6,6 @@ function Question(props) {
       <h2>{props.content}</h2>
     </div>
   )
-}
-
-Question.propTypes = {
-  content: PropTypes.string.isRequired,
 }
 
 export default Question

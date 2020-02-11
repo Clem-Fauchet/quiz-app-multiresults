@@ -2,102 +2,10 @@ import React, { useState, useEffect } from 'react'
 import './App.scss'
 
 import Quiz from './components/Quiz'
-// import quizQuestions from './api/quizQuestions'
-
-// import Question from './components/Question'
-// import QuestionCount from './components/QuestionCount'
-// import AnswerOption from './components/AnswerOption'
+import quizQuestions from './api/quizQuestions'
+import Result from './components/Result'
 
 function App() {
-  const quizQuestions = [
-    {
-      question: 'What franchise would you rather play a game from?',
-      answers: [
-        {
-          type: 'Microsoft',
-          content: 'Halo',
-        },
-        {
-          type: 'Nintendo',
-          content: 'Pokemon',
-        },
-        {
-          type: 'Sony',
-          content: 'Uncharted',
-        },
-      ],
-    },
-    {
-      question: 'Which console would you prefer to play with friends?',
-      answers: [
-        {
-          type: 'Microsoft',
-          content: 'X-Box',
-        },
-        {
-          type: 'Nintendo',
-          content: 'Nintendo 64',
-        },
-        {
-          type: 'Sony',
-          content: 'Playstation 1',
-        },
-      ],
-    },
-    {
-      question:
-        'Which of these racing franchises would you prefer to play a game from?',
-      answers: [
-        {
-          type: 'Microsoft',
-          content: 'Forza',
-        },
-        {
-          type: 'Nintendo',
-          content: 'Mario Kart',
-        },
-        {
-          type: 'Sony',
-          content: 'Gran Turismo',
-        },
-      ],
-    },
-    {
-      question: 'Which of these games do you think is best?',
-      answers: [
-        {
-          type: 'Microsoft',
-          content: 'BioShock',
-        },
-        {
-          type: 'Nintendo',
-          content: 'The Legend of Zelda: Ocarina of Time',
-        },
-        {
-          type: 'Sony',
-          content: 'Final Fantasy VII',
-        },
-      ],
-    },
-    {
-      question: 'What console would you prefer to own?',
-      answers: [
-        {
-          type: 'Microsoft',
-          content: 'X-Box One',
-        },
-        {
-          type: 'Nintendo',
-          content: 'Wii U',
-        },
-        {
-          type: 'Sony',
-          content: 'Playstation 4',
-        },
-      ],
-    },
-  ]
-
   const [state, setState] = useState({
     counter: 0,
     questionId: 1,
@@ -105,6 +13,9 @@ function App() {
     answerOptions: [],
     answer: '',
     answersCount: {},
+  })
+
+  const [stateResult, setStateResult] = useState({
     result: '',
   })
 
@@ -138,14 +49,15 @@ function App() {
   }, [])
 
   const setUserAnswer = (answer) => {
-    setState({
+    setState((prevState) => ({
       ...state,
       answersCount: {
-        ...state.answersCount,
-        [answer]: (state.answersCount[answer] || 0) + 1,
+        ...prevState.answersCount,
+        [answer]: state.answersCount[answer] + 1,
       },
       answer: answer,
-    })
+    }))
+    console.log(state.answer)
   }
 
   const setNextQuestion = () => {
@@ -162,9 +74,34 @@ function App() {
   }
 
   const handleAnswerSelected = (e) => {
-    setUserAnswer(e.currentTarget.value)
+    setUserAnswer(e.target.value)
     if (state.questionId < quizQuestions.length) {
       setTimeout(() => setNextQuestion(), 300)
+      console.log(stateResult)
+    } else {
+      setTimeout(() => setResults(() => getResults()), 300)
+      console.log(stateResult)
+    }
+  }
+
+  const getResults = () => {
+    const answersCount = state.answersCount
+    const answersCountKeys = Object.keys(answersCount)
+    const answersCountValues = answersCountKeys.map((key) => answersCount[key])
+    const maxAnswerCount = Math.max.apply(null, answersCountValues)
+
+    return answersCountKeys.filter(
+      (key) => answersCount[key] === maxAnswerCount
+    )
+  }
+
+  const setResults = (result) => {
+    if (result.length === 1) {
+      setStateResult({ ...stateResult, result: result[0] })
+      console.log('Continue')
+    } else {
+      setStateResult({ ...stateResult, result: 'Undetermined' })
+      console.log('Failed')
     }
   }
 
@@ -174,14 +111,18 @@ function App() {
         <h2>React Quiz</h2>
       </div>
       <div className='App-container'>
-        <Quiz
-          answer={state.answer}
-          answerOptions={state.answerOptions}
-          questionId={state.questionId}
-          question={state.question}
-          questionTotal={quizQuestions.length}
-          onAnswerSelected={handleAnswerSelected}
-        />
+        {state.result ? (
+          <Result quizResult={state.result} />
+        ) : (
+          <Quiz
+            answer={state.answer}
+            answerOptions={state.answerOptions}
+            questionId={state.questionId}
+            question={state.question}
+            questionTotal={quizQuestions.length}
+            onAnswerSelected={handleAnswerSelected}
+          />
+        )}
       </div>
     </div>
   )
